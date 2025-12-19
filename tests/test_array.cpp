@@ -43,32 +43,21 @@ TEST_F(FigureArrayTest, AddFigure) {
 }
 
 TEST_F(FigureArrayTest, RemoveFigure) {
-    // Удаляем первый элемент
     array->removeFigure(0);
     EXPECT_EQ(array->size(), 2);
-    
-    // Удаляем последний элемент
     array->removeFigure(1);
     EXPECT_EQ(array->size(), 1);
     
-    // Удаляем несуществующий индекс (ничего не должно произойти)
     EXPECT_NO_THROW(array->removeFigure(10));
     EXPECT_EQ(array->size(), 1);
     
-    // Удаляем с отрицательным индексом
     EXPECT_NO_THROW(array->removeFigure(-1));
     EXPECT_EQ(array->size(), 1);
 }
 
 TEST_F(FigureArrayTest, TotalArea) {
-    // Площадь треугольника: (3*4)/2 = 6
-    // Площадь квадрата: 2*2 = 4
-    // Площадь восьмиугольника: вычисляется отдельно
-    
     double triangleArea = 6.0;
     double squareArea = 4.0;
-    
-    // Вычисляем площадь восьмиугольника
     Point octPoints[8];
     for (int i = 0; i < 8; i++) {
         octPoints[i] = Point(i, i);
@@ -81,16 +70,13 @@ TEST_F(FigureArrayTest, TotalArea) {
 }
 
 TEST_F(FigureArrayTest, AccessOperator) {
-    // Доступ к существующим элементам
     EXPECT_NE((*array)[0], nullptr);
     EXPECT_NE((*array)[1], nullptr);
     EXPECT_NE((*array)[2], nullptr);
     
-    // Доступ к несуществующему элементу
     EXPECT_EQ((*array)[10], nullptr);
     EXPECT_EQ((*array)[-1], nullptr);
     
-    // Проверка типов фигур
     Figure* fig1 = (*array)[0];
     Figure* fig2 = (*array)[1];
     Figure* fig3 = (*array)[2];
@@ -115,7 +101,6 @@ TEST_F(FigureArrayTest, OutputOperator) {
     
     std::string result = ss.str();
     
-    // Проверяем, что вывод содержит ожидаемую информацию
     EXPECT_NE(result.find("Array of 3 figures"), std::string::npos);
     EXPECT_NE(result.find("Triangle"), std::string::npos);
     EXPECT_NE(result.find("Square"), std::string::npos);
@@ -129,28 +114,22 @@ TEST_F(FigureArrayTest, CopyConstructor) {
     EXPECT_EQ(array2.size(), 3);
     EXPECT_DOUBLE_EQ(array2.totalArea(), array->totalArea());
     
-    // Проверяем, что это глубокое копирование
     array->removeFigure(0);
     EXPECT_EQ(array->size(), 2);
-    EXPECT_EQ(array2.size(), 3); // Копия не должна измениться
+    EXPECT_EQ(array2.size(), 3);
 }
 
 TEST_F(FigureArrayTest, AssignmentOperator) {
     FigureArray array2;
     
-    // Изначально пустой
     EXPECT_EQ(array2.size(), 0);
-    
-    // Присваиваем
     array2 = *array;
     
     EXPECT_EQ(array2.size(), 3);
     EXPECT_DOUBLE_EQ(array2.totalArea(), array->totalArea());
-    
-    // Проверяем глубокое копирование
     array->removeFigure(0);
     EXPECT_EQ(array->size(), 2);
-    EXPECT_EQ(array2.size(), 3); // Копия не должна измениться
+    EXPECT_EQ(array2.size(), 3);
 }
 
 TEST_F(FigureArrayTest, EmptyArray) {
@@ -159,62 +138,52 @@ TEST_F(FigureArrayTest, EmptyArray) {
     EXPECT_EQ(emptyArray.size(), 0);
     EXPECT_TRUE(emptyArray.empty());
     EXPECT_DOUBLE_EQ(emptyArray.totalArea(), 0.0);
-    
-    // Удаление из пустого массива
     EXPECT_NO_THROW(emptyArray.removeFigure(0));
     EXPECT_NO_THROW(emptyArray.removeFigure(10));
-    
-    // Доступ к элементам пустого массива
     EXPECT_EQ(emptyArray[0], nullptr);
 }
 
 TEST_F(FigureArrayTest, AddNullptr) {
     int initialSize = array->size();
-    
-    // Попытка добавить nullptr
     array->addFigure(nullptr);
-    
-    // Размер не должен измениться
+
     EXPECT_EQ(array->size(), initialSize);
 }
 
 TEST(FigureArrayAdvancedTest, MixedOperations) {
     FigureArray arr;
-    
-    // Добавление треугольника
     Point triPoints[3] = {Point(0, 0), Point(5, 0), Point(0, 5)};
     arr.addFigure(new Triangle(triPoints));
+
     EXPECT_EQ(arr.size(), 1);
-    EXPECT_DOUBLE_EQ(arr.totalArea(), 12.5); // (5*5)/2 = 12.5
-    
-    // Добавление квадрата
+    EXPECT_DOUBLE_EQ(arr.totalArea(), 12.5); 
+
     Point sqPoints[4] = {Point(0, 0), Point(3, 0), Point(3, 3), Point(0, 3)};
     arr.addFigure(new Square(sqPoints));
+
     EXPECT_EQ(arr.size(), 2);
-    EXPECT_DOUBLE_EQ(arr.totalArea(), 12.5 + 9.0); // 12.5 + 9
-    
-    // Удаление
+    EXPECT_DOUBLE_EQ(arr.totalArea(), 12.5 + 9.0);
+
     arr.removeFigure(0);
+
     EXPECT_EQ(arr.size(), 1);
     EXPECT_DOUBLE_EQ(arr.totalArea(), 9.0);
-    
-    // Очистка
+
     arr.clear();
+
     EXPECT_EQ(arr.size(), 0);
     EXPECT_DOUBLE_EQ(arr.totalArea(), 0.0);
 }
 
 TEST(FigureArrayAdvancedTest, CapacityManagement) {
     FigureArray arr;
-    
-    // Добавляем много фигур для проверки увеличения capacity
     for (int i = 0; i < 20; i++) {
         Point triPoints[3] = {Point(0, 0), Point(1, 0), Point(0, 1)};
         arr.addFigure(new Triangle(triPoints));
     }
-    
+
     EXPECT_EQ(arr.size(), 20);
-    EXPECT_GE(arr.getCapacity(), 20); // Capacity должно быть >= 20
+    EXPECT_GE(arr.getCapacity(), 20);
 }
 
 int main(int argc, char **argv) {

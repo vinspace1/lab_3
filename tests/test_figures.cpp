@@ -5,7 +5,6 @@
 #include <sstream>
 #include <cmath>
 
-// Тест для Point
 TEST(PointTest, ConstructorAndEquality) {
     Point p1(1.0, 2.0);
     EXPECT_DOUBLE_EQ(p1.x, 1.0);
@@ -32,7 +31,6 @@ TEST(PointTest, StreamOperators) {
     EXPECT_DOUBLE_EQ(p2.y, 6.6);
 }
 
-// Тесты для Triangle
 TEST(TriangleTest, Constructor) {
     Point points[3] = {Point(0, 0), Point(4, 0), Point(0, 3)};
     Triangle triangle(points);
@@ -51,15 +49,15 @@ TEST(TriangleTest, GeometricCenter) {
     Triangle triangle(points);
     
     Point center = triangle.geometricCenter();
-    EXPECT_DOUBLE_EQ(center.x, 2.0); // (0+6+0)/3 = 2
-    EXPECT_DOUBLE_EQ(center.y, 8.0/3.0); // (0+0+8)/3 ≈ 2.666...
+    EXPECT_DOUBLE_EQ(center.x, 2.0);
+    EXPECT_DOUBLE_EQ(center.y, 8.0/3.0); 
 }
 
 TEST(TriangleTest, Area) {
     Point points[3] = {Point(0, 0), Point(5, 0), Point(0, 4)};
     Triangle triangle(points);
     
-    EXPECT_DOUBLE_EQ(triangle.getArea(), 10.0); // (5*4)/2 = 10
+    EXPECT_DOUBLE_EQ(triangle.getArea(), 10.0);
 }
 
 TEST(TriangleTest, DoubleCastOperator) {
@@ -67,17 +65,16 @@ TEST(TriangleTest, DoubleCastOperator) {
     Triangle triangle(points);
     
     double area = static_cast<double>(triangle);
-    EXPECT_DOUBLE_EQ(area, 6.0); // (3*4)/2 = 6
+    EXPECT_DOUBLE_EQ(area, 6.0); 
 }
 
 TEST(TriangleTest, OutputOperator) {
     Point points[3] = {Point(1, 2), Point(3, 4), Point(5, 6)};
     Triangle triangle(points);
-    
     std::stringstream ss;
-    ss << triangle; // Использует виртуальную функцию output()
-    
+    ss << triangle; 
     std::string result = ss.str();
+
     EXPECT_NE(result.find("Triangle vertices:"), std::string::npos);
     EXPECT_NE(result.find("1 2"), std::string::npos);
     EXPECT_NE(result.find("3 4"), std::string::npos);
@@ -87,7 +84,7 @@ TEST(TriangleTest, OutputOperator) {
 TEST(TriangleTest, InputOperator) {
     Triangle triangle;
     std::stringstream input("1 2 3 4 5 6");
-    input >> triangle; // Использует виртуальную функцию input()
+    input >> triangle;
     
     const Point* vertices = triangle.getVertices();
     EXPECT_DOUBLE_EQ(vertices[0].x, 1);
@@ -119,12 +116,11 @@ TEST(TriangleTest, AssignmentOperator) {
     EXPECT_TRUE(triangle1 == triangle2);
 }
 
-// Тесты для Square
 TEST(SquareTest, ConstructorAndArea) {
     Point points[4] = {Point(0, 0), Point(4, 0), Point(4, 4), Point(0, 4)};
     Square square(points);
     
-    EXPECT_DOUBLE_EQ(square.getArea(), 16.0); // 4*4 = 16
+    EXPECT_DOUBLE_EQ(square.getArea(), 16.0); 
 }
 
 TEST(SquareTest, GeometricCenter) {
@@ -132,8 +128,8 @@ TEST(SquareTest, GeometricCenter) {
     Square square(points);
     
     Point center = square.geometricCenter();
-    EXPECT_DOUBLE_EQ(center.x, 3.0); // (0+6+6+0)/4 = 3
-    EXPECT_DOUBLE_EQ(center.y, 3.0); // (0+0+6+6)/4 = 3
+    EXPECT_DOUBLE_EQ(center.x, 3.0);
+    EXPECT_DOUBLE_EQ(center.y, 3.0);
 }
 
 TEST(SquareTest, DoubleCast) {
@@ -141,7 +137,7 @@ TEST(SquareTest, DoubleCast) {
     Square square(points);
     
     double area = static_cast<double>(square);
-    EXPECT_DOUBLE_EQ(area, 9.0); // 3*3 = 9
+    EXPECT_DOUBLE_EQ(area, 9.0);
 }
 
 TEST(SquareTest, StreamOperators) {
@@ -158,7 +154,6 @@ TEST(SquareTest, StreamOperators) {
     EXPECT_NE(result.find("2 2"), std::string::npos);
 }
 
-// Тесты для Octagon
 TEST(OctagonTest, ConstructorAndArea) {
     Point points[8];
     for (int i = 0; i < 8; i++) {
@@ -168,7 +163,7 @@ TEST(OctagonTest, ConstructorAndArea) {
     
     Octagon octagon(points);
     
-    double expectedArea = 2 * sqrt(2); // Примерная площадь правильного восьмиугольника с радиусом 1
+    double expectedArea = 2 * sqrt(2); 
     EXPECT_NEAR(octagon.getArea(), expectedArea, 1e-9);
 }
 
@@ -211,20 +206,17 @@ TEST(PolymorphismTest, FigurePointers) {
     Figure* fig1 = &triangle;
     Figure* fig2 = &square;
     
-    // Проверка работы через указатель на базовый класс
-    EXPECT_DOUBLE_EQ(fig1->getArea(), 6.0); // (3*4)/2 = 6
-    EXPECT_DOUBLE_EQ(fig2->getArea(), 4.0); // 2*2 = 4
+    EXPECT_DOUBLE_EQ(fig1->getArea(), 6.0);
+    EXPECT_DOUBLE_EQ(fig2->getArea(), 4.0); 
     
-    // Проверка приведения к double через указатель
     double area1 = static_cast<double>(*fig1);
     double area2 = static_cast<double>(*fig2);
     EXPECT_DOUBLE_EQ(area1, 6.0);
     EXPECT_DOUBLE_EQ(area2, 4.0);
-    
-    // Проверка геометрического центра через указатель
+
     Point center1 = fig1->geometricCenter();
-    EXPECT_DOUBLE_EQ(center1.x, 1.0); // (0+3+0)/3 = 1
-    EXPECT_DOUBLE_EQ(center1.y, 4.0/3.0); // (0+0+4)/3 ≈ 1.333...
+    EXPECT_DOUBLE_EQ(center1.x, 1.0); 
+    EXPECT_DOUBLE_EQ(center1.y, 4.0/3.0); 
 }
 
 TEST(PolymorphismTest, OutputThroughBasePointer) {
@@ -238,14 +230,11 @@ TEST(PolymorphismTest, OutputThroughBasePointer) {
     
     std::string result = ss.str();
     
-    // Если оператор << выводит площадь
-    double expectedArea = 6.0; // (3*4)/2 = 6
+    double expectedArea = 6.0;
     std::stringstream expected;
     expected << expectedArea;
     
     EXPECT_EQ(result, expected.str());
-    
-    // Или если выводится что-то содержащее площадь
     EXPECT_NE(result.find("6"), std::string::npos);
 }
 
@@ -256,20 +245,17 @@ TEST(PolymorphismTest, DifferentTypesNotEqual) {
     Triangle triangle(triPoints);
     Square square(sqPoints);
     
-    // Фигуры разных типов не должны быть равны
     EXPECT_FALSE(triangle == square);
     
-    // Проверка через указатели
     Figure* fig1 = &triangle;
     Figure* fig2 = &square;
     EXPECT_FALSE(*fig1 == *fig2);
 }
 
 TEST(EdgeCasesTest, DegenerateTriangle) {
-    Point points[3] = {Point(0, 0), Point(2, 2), Point(4, 4)}; // Все точки на одной линии
+    Point points[3] = {Point(0, 0), Point(2, 2), Point(4, 4)}; 
     Triangle triangle(points);
-    
-    // Площадь должна быть 0 для вырожденного треугольника
+
     EXPECT_DOUBLE_EQ(triangle.getArea(), 0.0);
 }
 
@@ -277,14 +263,13 @@ TEST(EdgeCasesTest, LargeCoordinates) {
     Point points[3] = {Point(1e6, 1e6), Point(1e6 + 1000, 1e6), Point(1e6, 1e6 + 1000)};
     Triangle triangle(points);
     
-    EXPECT_DOUBLE_EQ(triangle.getArea(), 500000.0); // (1000*1000)/2 = 500000
+    EXPECT_DOUBLE_EQ(triangle.getArea(), 500000.0);
 }
 
 TEST(EdgeCasesTest, SelfAssignment) {
     Point points[3] = {Point(0, 0), Point(3, 0), Point(0, 4)};
     Triangle triangle(points);
     
-    // Самоприсваивание не должно ломать объект
     Figure& fig = triangle;
     fig = fig;
     

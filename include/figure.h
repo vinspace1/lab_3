@@ -12,13 +12,11 @@ struct Point {
         return std::abs(x - other.x) < 1e-9 && std::abs(y - other.y) < 1e-9;
     }
     
-    // Вывод точки
     friend std::ostream& operator<<(std::ostream& os, const Point& p) {
         os << p.x << " " << p.y;
         return os;
     }
     
-    // Ввод точки
     friend std::istream& operator>>(std::istream& is, Point& p) {
         is >> p.x >> p.y;
         return is;
